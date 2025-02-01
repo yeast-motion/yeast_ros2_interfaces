@@ -1,0 +1,3 @@
+clean:
+	@echo Cleaning generated messages...
+	rm -rf msg/
