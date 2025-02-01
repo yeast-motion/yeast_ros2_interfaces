@@ -14,9 +14,6 @@ args = parser.parse_args()
 SCRIPT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 ROOT_DIRECTORY = os.path.dirname(SCRIPT_DIRECTORY)
 
-print(SCRIPT_DIRECTORY)
-print(ROOT_DIRECTORY)
-
 template_file = os.path.realpath(args.template)
 
 schema_dir = os.path.realpath(args.src_dir)
@@ -43,15 +40,23 @@ for schema_file in schema_files:
 
         for struct in json_data['properties']:
             if 'type' in json_data['properties'][struct]:
-                type = json_data['properties'][struct]['type']
-                if type in type_map.keys():
-                    type = type_map[type]
+                if json_data['properties'][struct]['type'] == 'array':
+                    type = json_data['properties'][struct]['items']['type']
+                    if type in type_map.keys():
+                        type = type_map[type]
+                    type = f'{type}[]'
+                else:
+                    type = json_data['properties'][struct]['type']
+                    if type in type_map.keys():
+                        type = type_map[type]
+
                 structures[struct.lower()] = type
+
             elif '$ref' in json_data['properties'][struct]:
                 type = json_data['properties'][struct]['$ref']
                 type = type.replace('.schema.json', '')
                 structures[struct.lower()] = type
-
+    
     schema_basename = os.path.basename(schema_file)
 
     env = jinja2.Environment(loader=jinja2.FileSystemLoader('/'), trim_blocks=True)
