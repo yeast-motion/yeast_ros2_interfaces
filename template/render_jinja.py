@@ -22,7 +22,7 @@ schema_files = glob.glob(f'{schema_dir}/*.json')
 msg_dir = os.path.realpath(args.dst_dir)
 
 type_map = {
-    'number' : 'float32',
+    'number' : 'float64',
     'boolean' : 'bool',
     'integer' : 'int32'
 }
